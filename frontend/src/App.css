@@ -1,0 +1,92 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom component styles specific to App */
+.app .main {
+  flex: 1;
+}
+
+/* Override some base styles for better app-specific styling */
+.app .card-header .card-icon {
+  font-size: 1.25rem;
+}
+
+.app .features-header {
+  align-items: flex-start;
+}
+
+.app .features-header span {
+  margin-top: 4px;
+}
+
+/* Smooth transitions */
+.app .card,
+.app .feature-item,
+.app .footer-link {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Focus states for accessibility */
+.app .footer-link:focus {
+  outline: 2px solid #3182ce;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.app .card {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.app .card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.app .card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+/* Responsive adjustments specific to the app */
+@media (max-width: 768px) {
+  .app .header-title {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .app .emoji {
+    font-size: 2rem;
+  }
+  
+  .app .header-title h1 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app .card {
+    padding: 16px;
+  }
+  
+  .app .feature-item {
+    padding: 12px;
+  }
+  
+  .app .header-title h1 {
+    font-size: 1.5rem;
+  }
+}
