@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'VPC Infrastructure for AWS CI/CD Pipeline - Creates VPC with DNS enabled'
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: 'aws-cicd'
+    Description: 'Name prefix for all resources' 
+
+  VpcCidr:
+    Type: String 
+    Default: '10.0.0.0/16'
+    Description: 'CIDR block for the VPC'
+
+Resources:
+  # Main VPC - the foundation of your network 
+  MainVPC:
+    Type: AWS::EC2::VPC 
+    Properties:
+      CidrBlock: !Ref VpcCidr
+      EnableDnsHostnames: true 
+      EnableDnsSupport: true 
+      Tags:
+        - Key: Name 
+          Value: !Sub '${ProjectName}-vpc' 
+        - Key: Project 
+          Value: !Ref ProjectName
+
+Outputs:
+  VPCId:
+    Description: 'VPC ID for use in other templates'
+    Value: !Ref MainVPC
+    Export:
+      Name: !Sub '${ProjectName}-vpc-id'
+
+  VPCCidr:
+    Description: 'VPC CIDR block'
+    Value: !Ref VpcCidr
+    Export:
+      Name: !Sub '${ProjectName}-vpc-cidr'
