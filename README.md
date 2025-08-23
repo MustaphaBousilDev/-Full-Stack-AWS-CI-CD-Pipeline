@@ -221,5 +221,47 @@ aws devops cicd react nodejs docker ecs codepipeline blue-green-deployment cloud
 
 
 
+### Cloud Formation Command (Delete , Add, Update , Force delete)
+🚀 AWS CloudFormation Deploy & Delete Commands
+
+First Time Deployment (Create Stack):
+-------------
+CMD: aws cloudformation create-stack --stack-name aws-cicd-vpc --template-body file://cloudformation/01-vpc.yaml
+-------------
+Update Existing Stack:
+-------------
+aws cloudformation update-stack --stack-name aws-cicd-vpc --template-body file://cloudformation/01-vpc.yaml
+-------------
+Deploy with Custom Parameters:
+-------------
+aws cloudformation create-stack --stack-name aws-cicd-vpc --template-body file://cloudformation/01-vpc.yaml --parameters ParameterKey=ProjectName,ParameterValue=my-project ParameterKey=VpcCidr,ParameterValue=172.16.0.0/16
+-------------
+🗑️ Delete Commands
+Delete Stack (Destroys ALL Resources):
+-------------
+aws cloudformation delete-stack --stack-name aws-cicd-vpc
+-------------
+Force Delete (If Stack is Stuck):
+-------------
+aws cloudformation delete-stack --stack-name aws-cicd-vpc --retain-resources
+-------------
+📊 Monitoring Commands
+-------------
+---> Check Stack Status:
+aws cloudformation describe-stacks --stack-name aws-cicd-vpc
+---> Watch Stack Events (Real-time):
+aws cloudformation describe-stack-events --stack-name aws-cicd-vpc
+---> List All Your Stacks:
+aws cloudformation list-stacks
+---> Get Stack Outputs:
+aws cloudformation describe-stacks --stack-name aws-cicd-vpc --query 'Stacks[0].Outputs'
+🔍 Validation Commands
+-----------------------
+----> Validate Template Before Deploy:
+aws cloudformation validate-template --template-body file://cloudformation/01-vpc.yaml
+----> Estimate Costs:
+aws cloudformation estimate-template-cost --template-body file://cloudformation/01-vpc.yaml
+
+
  
 
