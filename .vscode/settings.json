@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "*.yaml": "yaml",
+        "*.yml": "yaml"
+    },
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/aws-cloudformation/cfn-python-lint/main/src/cfnlint/data/CloudFormationResourceSpecification.json": "*.yaml"
+    }
+}

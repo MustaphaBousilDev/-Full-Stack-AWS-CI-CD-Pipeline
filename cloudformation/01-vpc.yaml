@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'VPC Infrastructure for AWS CI/CD Pipeline - Creates VPC with DNS enabled'
 
+# Paramerts is input values that users can customize when deploying
 Parameters:
   ProjectName:
     Type: String
@@ -9,7 +10,7 @@ Parameters:
 
   VpcCidr:
     Type: String 
-    Default: '10.0.0.0/16'
+    Default: '10.0.0.0/16' # 65,536 IP addresses (10.0.0.0 to 10.0.255.255)
     Description: 'CIDR block for the VPC'
 
 Resources:
@@ -17,7 +18,7 @@ Resources:
   MainVPC:
     Type: AWS::EC2::VPC 
     Properties:
-      CidrBlock: !Ref VpcCidr
+      CidrBlock: !Ref VpcCidr # Gets the VALUE: '10.0.0.0/16'
       EnableDnsHostnames: true 
       EnableDnsSupport: true 
       Tags:
@@ -29,10 +30,13 @@ Resources:
   PublicSubnet1a:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref MainVPC
-      CidrBlock: '10.0.1.0/24'
+      VpcId: !Ref MainVPC # Result: vpc-1234567890abcdef0 (the actual VPC ID)
+      CidrBlock: '10.0.1.0/24' ## 254 IP addresses (10.0.1.0 to 10.0.1.255)
+      # !GetAZs ''  -->  Returns: ['us-east-1a', 'us-east-1b', 'us-east-1c', 'us-east-1d', 'us-east-1f']
+      # AvailabilityZone: 'us-east-1a' ❌ Hard-coded (breaks in different regions)
+      # AvailabilityZone: !Select [0, !GetAZs ''] ✅ Dynamic (works in any region)  
       AvailabilityZone: !Select [0, !GetAZs '']
-      MapPublicIpOnLaunch: true
+      MapPublicIpOnLaunch: true # Auto IP Assignment  true for pulbic and false for private
       Tags:
         - Key: Name
           Value: !Sub '${ProjectName}-public-1a'
@@ -48,7 +52,7 @@ Resources:
       VpcId: !Ref MainVPC
       CidrBlock: '10.0.2.0/24'
       AvailabilityZone: !Select [1, !GetAZs '']
-      MapPublicIpOnLaunch: true
+      MapPublicIpOnLaunch: true # Auto IP Assignment ((internet access))  true for pulbic and false for private
       Tags:
         - Key: Name
           Value: !Sub '${ProjectName}-public-1b'
@@ -56,6 +60,38 @@ Resources:
           Value: 'Public'
         - Key: Project
           Value: !Ref ProjectName
+  # Private Subnet in Availability Zone A
+  PrivateSubnet1a:
+    Type: AWS::EC2::Subnet 
+    Properties:
+      VpcId: !Ref MainVPC 
+      CidrBlock: '10.0.11.0/24'
+      AvailabilityZone: !Select [0, !GetAzs '']
+      MapPublicOnLaunch: false 
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-private-1a'
+        - Key: Type
+          Value: 'Private'
+        - Key: Project
+          Value: !Ref ProjectName
+  # Private Subnet in Availability Zone B
+  PrivateSubnet1b:
+    Type: AWS::EC2::Subnet 
+    Properties:
+      VpcId: !Ref MainVPC 
+      CidrBlock: '10.0.12.0/24'
+      AvailabilityZone: !Select [1, !GetAZs '']
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-private-1b'
+        - Key: Type
+          Value: 'Private'
+        - Key: Project
+          Value: !Ref ProjectName
+
+
 
 Outputs:
   VPCId:
@@ -69,3 +105,30 @@ Outputs:
     Value: !Ref VpcCidr
     Export:
       Name: !Sub '${ProjectName}-vpc-cidr'
+
+  #Public subnet outputs
+  PublicSubnet1aId:
+    Description: 'Public Subnet 1a ID'
+    Value: !Ref PublicSubnet1a
+    Export:
+      # !Sub Function - String Substitution 🔀
+      Name: !Sub '${ProjectName}-public-subnet-1a-id'
+
+  PublicSubnet1bId:
+    Description: 'Public Subnet 1b ID'  
+    Value: !Ref PublicSubnet1b
+    Export:
+      Name: !Sub '${ProjectName}-public-subnet-1b-id'
+
+  # Private Subnet Outputs
+  PrivateSubnet1aId:
+    Description: 'Private Subnet 1a ID'
+    Value: !Ref PrivateSubnet1a
+    Export:
+      Name: !Sub '${ProjectName}-private-subnet-1a-id'
+
+  PrivateSubnet1bId:
+    Description: 'Private Subnet 1b ID'
+    Value: !Ref PrivateSubnet1b
+    Export:
+      Name: !Sub '${ProjectName}-private-subnet-1b-id'
