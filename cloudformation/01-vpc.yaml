@@ -25,6 +25,37 @@ Resources:
           Value: !Sub '${ProjectName}-vpc' 
         - Key: Project 
           Value: !Ref ProjectName
+  # Public Subnet in Availability Zone A
+  PublicSubnet1a:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      CidrBlock: '10.0.1.0/24'
+      AvailabilityZone: !Select [0, !GetAZs '']
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-public-1a'
+        - Key: Type
+          Value: 'Public'
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Public Subnet in Availability Zone B  
+  PublicSubnet1b:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      CidrBlock: '10.0.2.0/24'
+      AvailabilityZone: !Select [1, !GetAZs '']
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-public-1b'
+        - Key: Type
+          Value: 'Public'
+        - Key: Project
+          Value: !Ref ProjectName
 
 Outputs:
   VPCId:
